@@ -12,9 +12,6 @@ module Pkwde
        #     has_enum :colors, :column_name => :custom_color_type
        #   end
       def has_enum(enum_name, options={})
-
-        # Reset changed-Flag after any save
-        after_save '@enum_changed = false'
         
         enum_column = options.has_key?(:column_name) ? options[:column_name].to_s : "#{enum_name}_type"
 
@@ -25,6 +22,10 @@ module Pkwde
 
         # Enum must be a Renum::EnumeratedValue Enum
         raise ArgumentError, "expected Renum::EnumeratedValue" unless enum_class.superclass == Renum::EnumeratedValue
+        
+        define_method("after_save") do
+          @enum_changed = false
+        end
 
         define_method("#{enum_name}") do
           begin
