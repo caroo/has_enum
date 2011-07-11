@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/test_helper'
+require 'test_helper'
 
 class HasEnumTest < Test::Unit::TestCase
 
@@ -107,23 +107,30 @@ class HasEnumTest < Test::Unit::TestCase
     assert_raise(NameError) { enum_mixin.product = Product::Platin }
   end
   
-  def test_should_not_be_able_to_set_invalid_enum
+  def test_should_not_be_able_to_set_invalid_enum_2
     enum_mixin = ClassWithEnum.new
     enum_mixin[:product_type] = "Platin"
     enum_mixin.valid?
-    assert enum_mixin.errors.on(:product_type)
+    assert enum_mixin.errors[:product_type]
   end
   
   def test_should_not_return_validation_error_if_enum_is_nil
     enum_mixin = ClassWithEnum.new
     enum_mixin.valid?
-    assert_nil enum_mixin.errors.on(:product_type)
+    assert_equal [], enum_mixin.errors[:product_type]
   end
   
   def test_should_return_nil_if_enum_is_of_wrong_type
     enum_mixin = ClassWithEnum.new
     enum_mixin[:product_type] = "Platin"
     assert_nil enum_mixin.product
+  end
+  
+  def test_should_execute_all_callbacks
+    enum_mixin = ClassWithEnum.new
+    enum_mixin.product = Product::Gold
+    assert enum_mixin.save
+    assert enum_mixin.callback1_executed
   end
   
 end

@@ -1,13 +1,10 @@
 require 'test/unit'
-
-require 'rubygems'
 require 'mocha'
 require 'active_record'
 
-$:.unshift File.dirname(__FILE__) + '/../lib'
 require File.dirname(__FILE__) + '/../init'
 
-ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :dbfile => ":memory:")
+ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
 ActiveRecord::Migration.verbose = false
 
 def setup_db
@@ -49,6 +46,12 @@ setup_db # Init the database for class creation
 
 class ClassWithEnum < ActiveRecord::Base
   has_enum :product
+  attr_reader :callback1_executed
+  def callback1
+    @callback1_executed = true
+  end
+
+  after_save :callback1
 end
 
 class ClassWithoutEnum < ActiveRecord::Base; end
