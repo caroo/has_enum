@@ -32,7 +32,7 @@ module HasEnum
 
       define_method("#{enum_name}") do
         begin
-          return self[enum_column] ? enum_class.const_get(self[enum_column]) : nil
+          return self[enum_column].present? ? enum_class.const_get(self[enum_column]) : nil
         rescue NameError => e
           return nil
         end
