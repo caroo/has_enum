@@ -63,7 +63,7 @@ module HasEnum
       end
       
       define_method("#{enum_column}_check_for_valid_type_of_enum") do
-        return true if self[enum_column].nil?
+        return true if self[enum_column].nil? || self[enum_column].to_s.empty?
         begin
           enum_class.const_get(self[enum_column])
         rescue NameError => e
