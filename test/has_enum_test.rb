@@ -22,6 +22,12 @@ class HasEnumTest < Test::Unit::TestCase
     assert_equal Product::Gold.name, product_enum.product_type
   end
 
+  def test_should_be_nullable
+    product_enum = ClassWithEnum.new
+    product_enum.product = nil
+    assert_nil product_enum.product
+  end
+
   def test_should_accept_only_defined_enums
     product_enum = ClassWithEnum.new
 
@@ -29,7 +35,6 @@ class HasEnumTest < Test::Unit::TestCase
     assert_raise(ArgumentError) { product_enum.product = 1 }
     assert_raise(ArgumentError) { product_enum.product = "Product::Titanium" }
     assert_raise(ArgumentError) { product_enum.product = Product }
-    assert_raise(ArgumentError) { product_enum.product = nil }
     assert_raise(ArgumentError) { product_enum.product = :symbol }
   end
 

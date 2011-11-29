@@ -20,7 +20,7 @@ module HasEnum
       self.send("validate", "#{enum_column}_check_for_valid_type_of_enum")
       
       # throws a NameError if Enum Class doesn't exists
-      enum_class = options.has_key?(:class_name) ? Object.const_get(options[:class_name].to_s.classify) : Object.const_get(enum_name.to_s.classify)
+      enum_class = options.has_key?(:class_name) ? options[:class_name].to_s.constantize : enum_name.to_s.camelize.constantize
 
       # Enum must be a Renum::EnumeratedValue Enum
       raise ArgumentError, "expected Renum::EnumeratedValue" unless enum_class.superclass == Renum::EnumeratedValue
@@ -53,6 +53,9 @@ module HasEnum
             self[enum_column] = enum_to_set.name
             @enum_changed = true
           end
+        elsif enum_to_set.nil?
+          self[enum_column] = nil
+          @enum_changed = true
         else
           raise ArgumentError, "expected #{enum_class}, got #{enum_to_set.class}"
         end
