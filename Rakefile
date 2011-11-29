@@ -12,3 +12,8 @@ Rake::TestTask.new(:test) do |t|
   t.pattern = 'test/**/*_test.rb'
   t.verbose = true
 end
+
+desc "Create coverage data"
+task :coverage do
+  sh 'bundle exec rcov -x test -x gems -I lib:test test/has_enum_test.rb'
+end

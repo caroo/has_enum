@@ -46,19 +46,16 @@ module HasEnum
       end
 
       define_method("#{enum_name}=") do |enum_to_set|
-        # This ensures backwards compability with the renum gem. In the
-        # +pkwde-renum+ gem this comparsion bug is already fixed.
-        if enum_to_set.kind_of?(enum_class) && enum_class.include?(enum_to_set)
-          unless enum_to_set == self.send(enum_name)
-            self[enum_column] = enum_to_set.name
-            @enum_changed = true
-          end
-        elsif enum_to_set.nil?
+        old_value = self[enum_column]
+        enum_resolved = enum_class[enum_to_set]
+        if enum_to_set.nil?
           self[enum_column] = nil
-          @enum_changed = true
+        elsif enum_resolved
+          self[enum_column] = enum_resolved.name
         else
-          raise ArgumentError, "expected #{enum_class}, got #{enum_to_set.class}"
+          raise ArgumentError, "could not resolve #{enum_to_set}"
         end
+        @enum_changed ||= self[enum_column] != old_value
       end
 
       define_method("#{enum_name}_has_changed?") do
@@ -75,7 +72,6 @@ module HasEnum
         end
         return true
       end
-      
     end
 
   end

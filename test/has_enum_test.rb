@@ -24,15 +24,48 @@ class HasEnumTest < Test::Unit::TestCase
 
   def test_should_be_nullable
     product_enum = ClassWithEnum.new
+    product_enum.product = Product::Silver
+    product_enum.reset_enum_changed
+    assert_equal false, product_enum.product_has_changed?
     product_enum.product = nil
     assert_nil product_enum.product
+    assert_equal true, product_enum.product_has_changed?
+  end
+
+  def test_should_be_setable_by_string
+    product_enum = ClassWithEnum.new
+    product_enum.product = Product::Silver
+    product_enum.reset_enum_changed
+    assert_equal false, product_enum.product_has_changed?
+    product_enum.product = 'Gold'
+    assert_equal Product::Gold, product_enum.product
+    assert_equal true, product_enum.product_has_changed?
+  end
+
+  def test_should_be_setable_by_symbol
+    product_enum = ClassWithEnum.new
+    product_enum.product = Product::Silver
+    product_enum.reset_enum_changed
+    assert_equal false, product_enum.product_has_changed?
+    product_enum.product = :gold
+    assert_equal Product::Gold, product_enum.product
+    assert_equal true, product_enum.product_has_changed?
+  end
+
+  def test_should_be_setable_by_number
+    product_enum = ClassWithEnum.new
+    product_enum.product = Product::Silver
+    product_enum.reset_enum_changed
+    assert_equal false, product_enum.product_has_changed?
+    product_enum.product = 1
+    assert_equal Product::Gold, product_enum.product
+    assert_equal true, product_enum.product_has_changed?
   end
 
   def test_should_accept_only_defined_enums
     product_enum = ClassWithEnum.new
 
     assert_raise(ArgumentError) { product_enum.product = Fakes::NOT_DEFINIED }
-    assert_raise(ArgumentError) { product_enum.product = 1 }
     assert_raise(ArgumentError) { product_enum.product = "Product::Titanium" }
     assert_raise(ArgumentError) { product_enum.product = Product }
     assert_raise(ArgumentError) { product_enum.product = :symbol }

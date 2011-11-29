@@ -10,13 +10,14 @@ Gem::Specification.new do |s|
   s.summary     = %q{The has_enum extension provides an association with an enumeration class which requires the renum gem}
   s.description = %q{The has_enum extension provides an association with an enumeration class which requires the renum gem}
   
-  s.add_dependency "renum", ">= 1.3.1"
   s.add_dependency "activerecord"
+  # s.add_dependency "renum", ">= 1.3.1" # actually some new version of: gem 'renum', :git => 'git@github.com:caroo/renum.git'
   
   s.add_development_dependency "test-unit"
   s.add_development_dependency "mocha"
   s.add_development_dependency "rake"
   s.add_development_dependency "sqlite3"
+  s.add_development_dependency 'rcov'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
